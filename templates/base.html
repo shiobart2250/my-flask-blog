@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}My Flask Blog{% endblock %}</title>
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    </head>
+    <body class="bg-gray-100 text-gray-800">
+        <div class="container mx-auto px-4">
+            <header class="py-6 mb-8 border-b">
+                <h1 class="text-3xl font-bold text-blue-600 hover:text-blue-800">
+                    <a href="{{ url_for('index')}}"> My Flask Blog
+                    </a>
+                </h1>
+                <nav class="mt-2">
+                </nav>
+            </header>
+            <main class="bg-white p-6 rounded-lg shadow-md">
+                {% block content %}
+                {% endblock %}
+            </main>
+
+            <footer class="mt-8 pt-6 border-t text-center text-gray-500 text-sm">
+                <p>&copy; 2025 Your Name</p>
+            </footer>
+        </body>
+    </body>
+</html>
