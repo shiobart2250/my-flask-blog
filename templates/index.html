@@ -6,5 +6,20 @@
 
 {% block content %}
 <h2 class="text=2xl font-bold mb-4">ブログ記事一覧</h2>
+<div class="mt-6">
+    <h3 class="text-xl font-semibold mb-2">記事へのリンク(テスト用)</h3>
+    <ul>
+        <li>
+            <a href="{{ url_for('show_post', post_id=1) }}" class="text-blue-600 hover:text-blue-800">
+                {{ posts[1].title }} へ移動
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for('show_post', post_id=2) }}" class="text-blue-600 hover:text-blue-800">
+                {{ posts[2].title }} へ移動
+            </a>            
+        </li>
+    </ul>
+</div>
 <p class="text-gray-600">ここに記事の一覧が表示されます。(今はまだ表示されません)</p>
 {% endblock %}
