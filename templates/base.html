@@ -14,8 +14,41 @@
                     </a>
                 </h1>
                 <nav class="mt-2">
+                    <ul class="flex space-x-4">
+                        <li><a href="{{ url_for('index') }}" class="text-blue-600 hover:text-blue-800">トップ</a>
+                            {% if current_user.is_authenticated %}
+                            {# ログイン済みの場合 #}
+                            <li><span class="text-gray-600">{{ current_user.username }} さん</span></li>
+                            <li><a href="{{ url_for('logout') }}"  class="text-blue-600 hover:text-blue-800">ログアウト</a></li>
+                            {# ここに後で記事管理ページへのりんくなどを追加 #}
+                            {% else %}
+                            {# 未ログインの場合 #}
+                            <li><a href="{{ url_for('login') }}" class="text-blue-600 hover:text-blue-800">ログイン</a></li>
+                            {% endif %}
+                        </li>
+                    </ul>
                 </nav>
             </header>
+
+            {# (login.html からこちらに移動しても良い) #}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="my-4">
+                {% for category, message in messages %}
+                {% set alert_class = 'bg-blue-100 text-blue-700' %} {# default category or no category #}
+                {% if category == 'error' %}
+                {% set alert_class = 'bg-red-100 text-red-700' %}
+                {% elif category == 'success' %}
+                {% set alert_class = 'bg-green-100 text-green-700' %}
+                {% endif %}
+                <div class="p-4 rounded {{ alert_class }}" role="alert">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+
             <main class="bg-white p-6 rounded-lg shadow-md">
                 {% block content %}
                 {% endblock %}
