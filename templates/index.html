@@ -5,21 +5,25 @@
 {% endblock %}
 
 {% block content %}
-<h2 class="text=2xl font-bold mb-4">ブログ記事一覧</h2>
-<div class="mt-6">
-    <h3 class="text-xl font-semibold mb-2">記事へのリンク(テスト用)</h3>
-    <ul>
-        <li>
-            <a href="{{ url_for('show_post', post_id=1) }}" class="text-blue-600 hover:text-blue-800">
-                {{ posts[1].title }} へ移動
+<h2 class="text-2xl font-bold mb-6">ブログ記事一覧</h2>
+{% if posts %}
+<div class="space-y-6">
+    {% for post in posts %}
+    <article class="p-4 border rounded-lg hover:shadow-md transition duration-150">
+        <h3 class="text-xl font-semibold mb-2">
+            <a href="{{ url_for('show_post', post_id=post.id) }}" class="text-blue-600 hover:text-blue-800">
+                {{ post.title }}
             </a>
-        </li>
-        <li>
-            <a href="{{ url_for('show_post', post_id=2) }}" class="text-blue-600 hover:text-blue-800">
-                {{ posts[2].title }} へ移動
-            </a>            
-        </li>
-    </ul>
+        </h3>
+        {# <p class="text-gray-600 mb-2">{{ post.content[:100] }}...</p> #}
+        {# 本文の抜粋表示(任意) #}
+        <p class="text-sm text-gray-500">
+            作成日時： {{ post.created_at.strftime('%Y年%m月%d日 %H:%M') }}
+        </p>
+    </article>
+    {% endfor %}
 </div>
-<p class="text-gray-600">ここに記事の一覧が表示されます。(今はまだ表示されません)</p>
+{% else %}
+<p> まだ投稿がありません</p>
+{% endif %}
 {% endblock %}
