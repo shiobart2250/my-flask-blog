@@ -17,19 +17,11 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
 
-# ダミーのブロブ記事データ(あとでデータベースに置き換え)
-posts ={
-    1:{"title": "Flask入門", "content": "Flaskは軽量なPython Webフレームワーク"},
-    2:{"title": "Tailwind CSSの基本", "content": "ユーティリティファーストで高速なスタイリングが可能"},
-    3:{"titlte": "Pythonの学習方法", "content": "基礎から応用まで、様々な学習リソース有り"},
-}
-
 # SQLAlchemyの設定
 # データベースファイルのパス指定
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(basedir, "blog.db")
 # パフォーマンストラッキング無効か(推奨)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = (False)
-
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -77,6 +69,57 @@ def index():
 def show_post(post_id):
     post = Post.query.get_or_404(post_id)
     return render_template("post.html", post=post) 
+
+@app.route("/admin")
+@login_required
+def admin_index():
+    posts = Post.query.order_by(Post.created_at.desc()).all()
+    return render_template("admin/index.html", posts=posts)
+
+@app.route("/admin/create", methods=["GET", "POST"])
+@login_required
+def create_post():
+    if request.method == "POST":
+        title = request.form["title"]
+        content = request.form["content"]
+
+        if not title or not content:
+            flash("タイトルと本文は必須です", "error")
+        else:
+            new_post = Post(title=title, content=content)
+            db.session.add(new_post)
+            db.session.commit()
+            flash("新しい記事が作成されました", "success")
+            return redirect(url_for("admin_index"))
+    
+    return render_template("admin/create.html")
+
+@app.route("/admin/edit/<int:post_id>", methods=["GET", "POST"])
+@login_required
+def edit_post(post_id):
+    post = Post.query.get_or_404(post_id)
+
+    if request.method == "POST":
+        post.title = request.form["title"]
+        post.content = request.form["content"]
+
+        if not post.title or not post.content:
+            flash("タイトルと本文は必須です", "error")
+        else:
+            db.session.commit()
+            flash("記事が更新されました", "success")
+            return redirect(url_for("admin_index"))
+        
+    return render_template("admin/edit.html", post=post)
+
+@app.route("/admin/delete/<int:post_id>", methods=["POST"])
+@login_required
+def delete_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    db.session.delete(post)
+    db.session.commit()
+    flash("記事が削除されました", "success")
+    return redirect(url_for("admin_index"))
 
 # Flask-Loginがユーザ情報をロードするための関数
 @login_manager.user_loader

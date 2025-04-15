@@ -19,8 +19,9 @@
                             {% if current_user.is_authenticated %}
                             {# ログイン済みの場合 #}
                             <li><span class="text-gray-600">{{ current_user.username }} さん</span></li>
+                            <li><a href="{{ url_for('admin_index') }}"  class="text-blue-600 hover:text-blue-800">記事管理</a></li>
                             <li><a href="{{ url_for('logout') }}"  class="text-blue-600 hover:text-blue-800">ログアウト</a></li>
-                            {# ここに後で記事管理ページへのりんくなどを追加 #}
+                            {# ここに後で記事管理ページへのリンクなどを追加 #}
                             {% else %}
                             {# 未ログインの場合 #}
                             <li><a href="{{ url_for('login') }}" class="text-blue-600 hover:text-blue-800">ログイン</a></li>
